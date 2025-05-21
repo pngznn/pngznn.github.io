@@ -33,7 +33,7 @@ namespace UngDungQLBH
                                BAN.PHUTHU, BAN.MAKH, BAN.MANV,
                                CT.MAMON, CT.SOLUONG
                         FROM BAN
-                        JOIN CHITIET_BAN CT ON BAN.MAHD = CT.MAHD";
+                        LEFT JOIN CHITIET_BAN CT ON BAN.MAHD = CT.MAHD";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(query, con);
                 DataTable dataTable = new DataTable();
@@ -199,25 +199,40 @@ namespace UngDungQLBH
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0) // Chỉ xử lý nếu không phải tiêu đề
+            if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
 
-                txtMaHD.Text = dataGridView1.Rows[e.RowIndex].Cells["MaHD"].Value.ToString();
-                txtMaKH.Text = dataGridView1.Rows[e.RowIndex].Cells["MaKH"].Value.ToString();
-                txtMaNV.Text = dataGridView1.Rows[e.RowIndex].Cells["MaNV"].Value.ToString();
+                txtMaHD.Text = row.Cells["MaHD"].Value.ToString();
+                txtMaKH.Text = row.Cells["MaKH"].Value.ToString();
+                txtMaNV.Text = row.Cells["MaNV"].Value.ToString();
                 txtTongtien.Text = row.Cells["TongTien"].Value.ToString();
                 txtTongSL.Text = row.Cells["TongSL"].Value.ToString();
-                txtPhuThu.Text = row.Cells["PhuThu"].Value.ToString(); 
-                txtSoTienGiam.Text = row.Cells["SoTienGiam"].Value.ToString(); //
-                txtThanhTienSauKM.Text = row.Cells["ThanhTienSauKM"].Value.ToString(); //
+                txtPhuThu.Text = row.Cells["PhuThu"].Value.ToString();
 
-                dtpNgay.Value = Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Ngay"].Value);
+                // Chỉ gán nếu có cột SoTienGiam
+                if (dataGridView1.Columns.Contains("SoTienGiam"))
+                {
+                    txtSoTienGiam.Text = row.Cells["SoTienGiam"].Value?.ToString();
+                }
+                else
+                {
+                    txtSoTienGiam.Text = "0";
+                }
 
-                // Kiểu chuỗi - ComboBox
+                // Tương tự cho ThànhTiềnSauKM
+                if (dataGridView1.Columns.Contains("ThanhTienSauKM"))
+                {
+                    txtThanhTienSauKM.Text = row.Cells["ThanhTienSauKM"].Value?.ToString();
+                }
+                else
+                {
+                    txtThanhTienSauKM.Text = txtTongtien.Text; // nếu không có thì dùng Tổng tiền
+                }
+
+                dtpNgay.Value = Convert.ToDateTime(row.Cells["Ngay"].Value);
                 cboPTTT.SelectedItem = row.Cells["PTTT"].Value?.ToString();
-
-                txtMaHD.Enabled = false; //Không cho sửa mã hóa đơn
+                txtMaHD.Enabled = false;
             }
         }
         private void btnLamMoi_Click(object sender, EventArgs e)
@@ -260,9 +275,19 @@ namespace UngDungQLBH
             decimal donGia = LayGiaBanMon(maMon);
             decimal thanhTien = soLuong * donGia;
 
-            dsChiTiet.Rows.Add(maMon, tenMon, soLuong, thanhTien);
-            dgvChiTietBan.DataSource = dsChiTiet;
+            // Kiểm tra món đã tồn tại chưa
+            DataRow existingRow = dsChiTiet.AsEnumerable().FirstOrDefault(r => r.Field<string>("MAMON") == maMon);
+            if (existingRow != null)
+            {
+                existingRow["SOLUONG"] = Convert.ToInt32(existingRow["SOLUONG"]) + soLuong;
+                existingRow["THANHTIEN"] = Convert.ToInt32(existingRow["SOLUONG"]) * donGia;
+            }
+            else
+            {
+                dsChiTiet.Rows.Add(maMon, tenMon, soLuong, thanhTien);
+            }
 
+            dgvChiTietBan.DataSource = dsChiTiet;
             CapNhatTongTienVaSL();
         }
 
@@ -322,12 +347,21 @@ namespace UngDungQLBH
                 using (SqlConnection connection = new SqlConnection(sCon))
                 {
                     connection.Open();
-                    string query = "DELETE FROM BAN WHERE MAHD = @MAHD";
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
 
-                    command.ExecuteNonQuery();
+                    // Xóa chi tiết hóa đơn trước
+                    string deleteCT = "DELETE FROM CHITIET_BAN WHERE MAHD = @MAHD";
+                    SqlCommand cmdCT = new SqlCommand(deleteCT, connection);
+                    cmdCT.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
+                    cmdCT.ExecuteNonQuery();
+
+                    // Sau đó mới xóa hóa đơn
+                    string deleteBAN = "DELETE FROM BAN WHERE MAHD = @MAHD";
+                    SqlCommand cmdBAN = new SqlCommand(deleteBAN, connection);
+                    cmdBAN.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
+                    cmdBAN.ExecuteNonQuery();
                 }
+
+                MessageBox.Show("Xóa đơn hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
             }
         }
@@ -342,26 +376,35 @@ namespace UngDungQLBH
                     try
                     {
                         con.Open();
-                        string query = @"UPDATE BAN 
-                                         SET MAKH = @MAKH, MANV = @MANV, 
-                                             NGAY = @NGAY, PTTT = @PTTT 
-                                         WHERE MAHD = @MAHD;
 
-                                         UPDATE CHITIET_BAN 
-                                         SET MAMON = @MAMON, SOLUONG = @SOLUONG
-                                         WHERE MAHD = @MAHD";
+                        // Cập nhật bảng BAN
+                        string updateBan = @"UPDATE BAN 
+                                     SET MAKH = @MAKH, MANV = @MANV, 
+                                         NGAY = @NGAY, PTTT = @PTTT 
+                                     WHERE MAHD = @MAHD";
+                        SqlCommand cmdBan = new SqlCommand(updateBan, con);
+                        cmdBan.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
+                        cmdBan.Parameters.AddWithValue("@MAKH", txtMaKH.Text);
+                        cmdBan.Parameters.AddWithValue("@MANV", txtMaNV.Text);
+                        cmdBan.Parameters.AddWithValue("@NGAY", dtpNgay.Value);
+                        cmdBan.Parameters.AddWithValue("@PTTT", cboPTTT.SelectedItem?.ToString() ?? "Tiền mặt");
+                        cmdBan.ExecuteNonQuery();
 
-                        SqlCommand command = new SqlCommand(query, con);
+                        // Xóa chi tiết cũ
+                        SqlCommand cmdXoaCT = new SqlCommand("DELETE FROM CHITIET_BAN WHERE MAHD = @MAHD", con);
+                        cmdXoaCT.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
+                        cmdXoaCT.ExecuteNonQuery();
 
-                        command.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
-                        command.Parameters.AddWithValue("@MAKH", txtMaKH.Text);
-                        command.Parameters.AddWithValue("@MANV", txtMaNV.Text);
-                        command.Parameters.AddWithValue("@PTTT", cboPTTT.SelectedItem?.ToString() ?? "Tiền mặt");
-
-                        command.Parameters.AddWithValue("@MAMON", cboPTTT.SelectedItem?.ToString() ?? "Latte");
-                        command.Parameters.AddWithValue("@SOLUONG", txtSoLuong.Text);
-                        command.Parameters.AddWithValue("@NGAY", dtpNgay.Value);
-                        command.ExecuteNonQuery();
+                        // Thêm lại chi tiết mới từ dsChiTiet
+                        foreach (DataRow row in dsChiTiet.Rows)
+                        {
+                            SqlCommand cmdThemCT = new SqlCommand(
+                                "INSERT INTO CHITIET_BAN (MAHD, MAMON, SOLUONG) VALUES (@MAHD, @MAMON, @SOLUONG)", con);
+                            cmdThemCT.Parameters.AddWithValue("@MAHD", txtMaHD.Text);
+                            cmdThemCT.Parameters.AddWithValue("@MAMON", row["MAMON"].ToString());
+                            cmdThemCT.Parameters.AddWithValue("@SOLUONG", Convert.ToInt32(row["SOLUONG"]));
+                            cmdThemCT.ExecuteNonQuery();
+                        }
 
                         MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadData();
