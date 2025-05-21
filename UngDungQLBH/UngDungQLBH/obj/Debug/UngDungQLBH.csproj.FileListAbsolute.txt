@@ -1,0 +1,10 @@
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\bin\Debug\UngDungQLBH.exe.config
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\bin\Debug\UngDungQLBH.exe
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\bin\Debug\UngDungQLBH.pdb
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.csproj.AssemblyReference.cache
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.Properties.Resources.resources
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.csproj.GenerateResource.cache
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.csproj.CoreCompileInputs.cache
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.exe
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.pdb
+C:\Users\ACER\Documents\UngDungQLBH\UngDungQLBH\obj\Debug\UngDungQLBH.frmBan_Them.resources
