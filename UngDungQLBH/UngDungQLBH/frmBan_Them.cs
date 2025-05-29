@@ -76,16 +76,40 @@ namespace UngDungQLBH
 
         }
 
+        private string LayMaHoaDonMoi()
+        {
+            string maMoi = "HD00000001"; // Mặc định nếu bảng rỗng
+
+            using (SqlConnection con = new SqlConnection(sCon))
+            {
+                con.Open();
+                string query = @"   SELECT MAX(CAST(SUBSTRING(MAHD, 3, LEN(MAHD)) AS INT)) 
+                                    FROM BAN 
+                                    WHERE MAHD LIKE 'HD________'";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                object result = cmd.ExecuteScalar();
+
+                if (result != DBNull.Value && result != null)
+                {
+                    int soMoi = Convert.ToInt32(result) + 1;
+                    maMoi = "HD" + soMoi.ToString("D8"); // Đệm đủ 8 chữ số
+                }
+
+                con.Close();
+            }
+
+            return maMoi;
+        }
+
         private void btnThem_Click(object sender, EventArgs e)
         {
             DialogResult ret = MessageBox.Show("Bạn có chắc chắn muốn thêm hóa đơn này không?", "Thông báo", MessageBoxButtons.OKCancel);
             if (ret == DialogResult.OK)
             {
-                // Kiểm tra đầu vào
                 if (string.IsNullOrWhiteSpace(txtMaHD.Text))
                 {
-                    MessageBox.Show("Vui lòng nhập mã hóa đơn.");
-                    return;
+                    txtMaHD.Text = LayMaHoaDonMoi(); // Lấy mã mới nếu trống
                 }
 
                 if (dsChiTiet.Rows.Count == 0)
@@ -189,9 +213,36 @@ namespace UngDungQLBH
                 txtPhuThu.Text = row.Cells["PhuThu"].Value.ToString();
                 dtpNgay.Value = Convert.ToDateTime(row.Cells["Ngay"].Value);
                 cboPTTT.SelectedItem = row.Cells["PTTT"].Value?.ToString();
+
+                // Lấy mã hóa đơn được chọn
+                string maHD = dataGridView1.Rows[e.RowIndex].Cells["MAHD"].Value.ToString();
+
+                // Gọi hàm load chi tiết hóa đơn
+                LoadChiTietHoaDon(maHD);
+
                 txtMaHD.Enabled = false;
             }
         }
+
+        private void LoadChiTietHoaDon(string maHD)
+        {
+            using (SqlConnection con = new SqlConnection(sCon))
+            {
+                string query = @"   SELECT ct.MAMON, m.TENMON, ct.SOLUONG
+                                    FROM CHITIET_BAN ct
+                                    JOIN MON m ON ct.MAMON = m.MAMON
+                                    WHERE ct.MAHD = @MAHD";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, con);
+                da.SelectCommand.Parameters.AddWithValue("@MAHD", maHD);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                dgvChiTietBan.DataSource = dt;
+            }
+        }
+
+
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             ClearForm();
@@ -372,6 +423,11 @@ namespace UngDungQLBH
                     }
                 }
             }
+        }
+
+        private void dgvChiTietBan_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
         }
     }
 }

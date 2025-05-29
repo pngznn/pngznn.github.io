@@ -275,6 +275,7 @@
             this.dgvChiTietBan.RowTemplate.Height = 24;
             this.dgvChiTietBan.Size = new System.Drawing.Size(584, 135);
             this.dgvChiTietBan.TabIndex = 27;
+            this.dgvChiTietBan.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChiTietBan_CellClick);
             // 
             // txtSoLuong
             // 
