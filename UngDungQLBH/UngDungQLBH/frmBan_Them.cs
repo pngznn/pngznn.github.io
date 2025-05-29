@@ -60,8 +60,6 @@ namespace UngDungQLBH
             cboPTTT.SelectedIndex = -1; //Không chọn giá trị nào trong ComboBox
             cboMon.SelectedIndex = -1;
             txtSoLuong.Text = "";
-            txtSoTienGiam.Text = "";
-            txtThanhTienSauKM.Text = "";
             dsChiTiet.Clear();
             dgvChiTietBan.DataSource = null;
 
@@ -126,27 +124,7 @@ namespace UngDungQLBH
                         tvpParam.TypeName = "dbo.DS_CT_BAN_TYPE";
 
                         cmd.ExecuteNonQuery();
-                        // Sau khi thêm hóa đơn xong, gọi khuyến mãi
-                        SqlCommand cmdKM = new SqlCommand("sp_AP_DUNG_KHUYEN_MAI", con);
-                        cmdKM.CommandType = CommandType.StoredProcedure;
-                        cmdKM.Parameters.AddWithValue("@MAHD", txtMaHD.Text.Trim());
-
-                        // Thêm các tham số OUTPUT để lấy số tiền giảm và thành tiền sau KM
-                        SqlParameter tienGiamParam = new SqlParameter("@TIENGIAM", SqlDbType.Decimal);
-                        tienGiamParam.Direction = ParameterDirection.Output;
-                        cmdKM.Parameters.Add(tienGiamParam);
-
-                        SqlParameter thanhTienSauKMParam = new SqlParameter("@THANHTIEN_SAUKM", SqlDbType.Decimal);
-                        thanhTienSauKMParam.Direction = ParameterDirection.Output;
-                        cmdKM.Parameters.Add(thanhTienSauKMParam);
-
-
-                        cmdKM.ExecuteNonQuery();
-
-                        // Hiển thị lên TextBox
-                        txtSoTienGiam.Text = string.Format("{0:N0}", tienGiamParam.Value);
-                        txtThanhTienSauKM.Text = string.Format("{0:N0}", thanhTienSauKMParam.Value);
-
+                        
                         MessageBox.Show("Tạo hóa đơn thành công!");
                         LoadData();
                     }
@@ -209,27 +187,6 @@ namespace UngDungQLBH
                 txtTongtien.Text = row.Cells["TongTien"].Value.ToString();
                 txtTongSL.Text = row.Cells["TongSL"].Value.ToString();
                 txtPhuThu.Text = row.Cells["PhuThu"].Value.ToString();
-
-                // Chỉ gán nếu có cột SoTienGiam
-                if (dataGridView1.Columns.Contains("SoTienGiam"))
-                {
-                    txtSoTienGiam.Text = row.Cells["SoTienGiam"].Value?.ToString();
-                }
-                else
-                {
-                    txtSoTienGiam.Text = "0";
-                }
-
-                // Tương tự cho ThànhTiềnSauKM
-                if (dataGridView1.Columns.Contains("ThanhTienSauKM"))
-                {
-                    txtThanhTienSauKM.Text = row.Cells["ThanhTienSauKM"].Value?.ToString();
-                }
-                else
-                {
-                    txtThanhTienSauKM.Text = txtTongtien.Text; // nếu không có thì dùng Tổng tiền
-                }
-
                 dtpNgay.Value = Convert.ToDateTime(row.Cells["Ngay"].Value);
                 cboPTTT.SelectedItem = row.Cells["PTTT"].Value?.ToString();
                 txtMaHD.Enabled = false;
@@ -262,7 +219,7 @@ namespace UngDungQLBH
             }
 
             txtTongSL.Text = tongSL.ToString();
-            txtTongtien.Text = tongTien.ToString("N0");
+            txtTongtien.Text = string.Format("{0:N0} VND", tongTien);
         }
 
         private void btnThemMon_Click(object sender, EventArgs e)

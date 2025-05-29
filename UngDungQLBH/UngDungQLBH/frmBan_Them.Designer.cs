@@ -55,10 +55,6 @@
             this.txtSoLuong = new System.Windows.Forms.TextBox();
             this.cboMon = new System.Windows.Forms.ComboBox();
             this.btnThemMon = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txtSoTienGiam = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txtThanhTienSauKM = new System.Windows.Forms.TextBox();
             this.lblKM = new System.Windows.Forms.Label();
             this.btnXoa = new System.Windows.Forms.Button();
             this.btnSua = new System.Windows.Forms.Button();
@@ -192,7 +188,7 @@
             // btnThem
             // 
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThem.Location = new System.Drawing.Point(488, 265);
+            this.btnThem.Location = new System.Drawing.Point(517, 392);
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(112, 31);
             this.btnThem.TabIndex = 8;
@@ -242,7 +238,7 @@
             // btnLamMoi
             // 
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLamMoi.Location = new System.Drawing.Point(552, 373);
+            this.btnLamMoi.Location = new System.Drawing.Point(586, 498);
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.Size = new System.Drawing.Size(112, 31);
             this.btnLamMoi.TabIndex = 23;
@@ -298,7 +294,7 @@
             // btnThemMon
             // 
             this.btnThemMon.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThemMon.Location = new System.Drawing.Point(552, 102);
+            this.btnThemMon.Location = new System.Drawing.Point(586, 121);
             this.btnThemMon.Name = "btnThemMon";
             this.btnThemMon.Size = new System.Drawing.Size(112, 31);
             this.btnThemMon.TabIndex = 30;
@@ -306,56 +302,19 @@
             this.btnThemMon.UseVisualStyleBackColor = true;
             this.btnThemMon.Click += new System.EventHandler(this.btnThemMon_Click);
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(459, 571);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(112, 23);
-            this.label11.TabIndex = 31;
-            this.label11.Text = "Số tiền giảm";
-            // 
-            // txtSoTienGiam
-            // 
-            this.txtSoTienGiam.Location = new System.Drawing.Point(709, 573);
-            this.txtSoTienGiam.Name = "txtSoTienGiam";
-            this.txtSoTienGiam.ReadOnly = true;
-            this.txtSoTienGiam.Size = new System.Drawing.Size(124, 22);
-            this.txtSoTienGiam.TabIndex = 32;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(459, 636);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(224, 23);
-            this.label12.TabIndex = 33;
-            this.label12.Text = "Thành tiền sau khuyến mãi";
-            // 
-            // txtThanhTienSauKM
-            // 
-            this.txtThanhTienSauKM.Location = new System.Drawing.Point(709, 638);
-            this.txtThanhTienSauKM.Name = "txtThanhTienSauKM";
-            this.txtThanhTienSauKM.ReadOnly = true;
-            this.txtThanhTienSauKM.Size = new System.Drawing.Size(124, 22);
-            this.txtThanhTienSauKM.TabIndex = 34;
-            // 
             // lblKM
             // 
             this.lblKM.AutoSize = true;
             this.lblKM.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblKM.Location = new System.Drawing.Point(557, 515);
             this.lblKM.Name = "lblKM";
-            this.lblKM.Size = new System.Drawing.Size(178, 23);
+            this.lblKM.Size = new System.Drawing.Size(0, 23);
             this.lblKM.TabIndex = 35;
-            this.lblKM.Text = "Áp dụng khuyến mãi";
             // 
             // btnXoa
             // 
             this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnXoa.Location = new System.Drawing.Point(488, 318);
+            this.btnXoa.Location = new System.Drawing.Point(517, 445);
             this.btnXoa.Name = "btnXoa";
             this.btnXoa.Size = new System.Drawing.Size(112, 31);
             this.btnXoa.TabIndex = 36;
@@ -366,7 +325,7 @@
             // btnSua
             // 
             this.btnSua.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSua.Location = new System.Drawing.Point(623, 265);
+            this.btnSua.Location = new System.Drawing.Point(652, 392);
             this.btnSua.Name = "btnSua";
             this.btnSua.Size = new System.Drawing.Size(112, 31);
             this.btnSua.TabIndex = 37;
@@ -377,7 +336,7 @@
             // btnTimKiem
             // 
             this.btnTimKiem.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTimKiem.Location = new System.Drawing.Point(623, 318);
+            this.btnTimKiem.Location = new System.Drawing.Point(652, 445);
             this.btnTimKiem.Name = "btnTimKiem";
             this.btnTimKiem.Size = new System.Drawing.Size(112, 31);
             this.btnTimKiem.TabIndex = 38;
@@ -395,10 +354,6 @@
             this.Controls.Add(this.btnSua);
             this.Controls.Add(this.btnXoa);
             this.Controls.Add(this.lblKM);
-            this.Controls.Add(this.txtThanhTienSauKM);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.txtSoTienGiam);
-            this.Controls.Add(this.label11);
             this.Controls.Add(this.btnThemMon);
             this.Controls.Add(this.cboMon);
             this.Controls.Add(this.txtSoLuong);
@@ -466,10 +421,6 @@
         private System.Windows.Forms.TextBox txtSoLuong;
         private System.Windows.Forms.ComboBox cboMon;
         private System.Windows.Forms.Button btnThemMon;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox txtSoTienGiam;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox txtThanhTienSauKM;
         private System.Windows.Forms.Label lblKM;
         private System.Windows.Forms.Button btnXoa;
         private System.Windows.Forms.Button btnSua;
